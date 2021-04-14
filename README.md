@@ -1,3 +1,7 @@
-# More Generated Objects
+# Rainforest Ruins
 
-Improve generated maps with decorative objects. More info coming soon.
+![Rainforest Ruins header](docs/ruins.png)
+
+Ancient ruins for sub-tropic rainforests.
+
+Can you follow the clues and unlock the hidden treasure?
