@@ -1,0 +1,21 @@
+##grflangid 0x01
+
+STR_GRF_NAME						:{TITLE} {VERSION}
+STR_GRF_DESC						:{ORANGE}Ancient ruins for sub-tropic rainforests.{}{}{BLACK}Can you follow the clues and unlock the hidden treasure?{}{}{BLACK}Created by 2TallTyler.
+
+STR_WEBSITE							:https://github.com/2TallTyler/rainforest_ruins
+
+STR_RESEARCH_UNIVERSITY				:Research University
+STR_MARSHALL_COLLEGE				:Marshall College
+
+STR_OBJ_RUINS_1						:1. A fantastic treasure awaits
+STR_OBJ_RUINS_2						:2. Hidden in an ancient temple
+STR_OBJ_RUINS_3						:3. Study these clues in your grand decorative halls
+STR_OBJ_RUINS_4						:4. When the number of these match
+STR_OBJ_RUINS_5						:5. The glyphs which spell the name of
+
+STR_OBJ_RUINS_6_CHRISSAWYER			:6. The original creator
+STR_OBJ_RUINS_6_SIMONFOSTER			:6. The original artist
+STR_OBJ_RUINS_6_JOHNBROOMHALL		:6. The original composer
+
+STR_OBJ_RUINS_7						:7. The temple will reveal itself to you

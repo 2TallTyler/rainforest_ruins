@@ -1,0 +1,53 @@
+
+/* Begin Functions */
+
+random_switch (FEAT_OBJECTS, SELF, Random4) {
+	1: return 0;
+	1: return 1;
+	1: return 2;
+	1: return 3;
+}
+
+switch (FEAT_OBJECTS, SELF, IsFlatTile, tile_slope == SLOPE_FLAT) {return;}
+switch (FEAT_OBJECTS, SELF, IsRainforest, terrain_type == TILETYPE_RAIN_FOREST) {return;}
+
+switch (FEAT_OBJECTS, SELF, RuinLocationCheck,
+	IsFlatTile() &&
+	IsRainforest()
+	) {1: return CB_RESULT_LOCATION_ALLOW; return CB_RESULT_LOCATION_DISALLOW_ONLY_RAINFOREST;}
+
+switch (FEAT_OBJECTS, SELF, MatchTreasureAndClueCheck, clue, 
+	IsFlatTile() &&
+	IsRainforest() &&
+	object_count(clue) == 1
+	) {1: return CB_RESULT_LOCATION_ALLOW; return CB_RESULT_LOCATION_DISALLOW_ONLY_RAINFOREST;}
+
+switch (FEAT_OBJECTS, SELF, RandomTreasure, map_type) {
+	MAP_TYPE_RECTANGULAR: return 8;
+	MAP_TYPE_X_BIGGER: return 9;
+	MAP_TYPE_Y_BIGGER: return 10;
+}
+	
+switch (FEAT_OBJECTS, SELF, UniqueRuinTreasureCheck, id,
+	IsFlatTile() &&
+	IsRainforest() &&
+	object_count(8) == 0 &&
+	object_count(9) == 0 &&
+	object_count(10) == 0 &&
+	object_count(11) == 0 &&
+	object_count(12) == 0 &&
+	object_count(13) == 0 &&
+	id == RandomTreasure()
+	) {1: return CB_RESULT_LOCATION_ALLOW; return CB_RESULT_LOCATION_DISALLOW_ONLY_RAINFOREST;}
+	
+switch (FEAT_OBJECTS, SELF, StartAnimateIfObjectCount, id, target, object_count(id) == target) {
+	1: return CB_RESULT_START_ANIMATION;
+	return CB_RESULT_STOP_ANIMATION;
+}
+
+switch (FEAT_OBJECTS, SELF, ContinueAnimateIfObjectCount, id, target, object_count(id) == target) {
+	1: return CB_RESULT_NEXT_FRAME;
+	return 0;
+}
+
+/* End Functions */

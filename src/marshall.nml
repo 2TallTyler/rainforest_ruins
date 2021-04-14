@@ -1,0 +1,39 @@
+
+/* Begin Marshall College */
+
+spriteset (spr_marshall_main, "src/gfx/marshall_main_8bpp.png") {
+	template_z64(0,0)
+}
+
+spritelayout sprlay_marshall_main {
+	ground {
+		sprite: 1420;
+	}
+	
+	building {
+		sprite: spr_marshall_main(LOAD_TEMP(1));
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+	}
+}
+
+switch (FEAT_OBJECTS, SELF, switch_marshall_sprite, STORE_TEMP(view, 1)) {sprlay_marshall_main;}
+
+item (FEAT_OBJECTS, object_marshall_main, 20) {
+	property {
+		class: "INDY";
+		classname: string(STR_RESEARCH_UNIVERSITY);
+		name: string(STR_MARSHALL_COLLEGE);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_INGAME, OBJ_FLAG_2CC);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 4;
+	}
+	graphics {
+		default: switch_marshall_sprite;
+	}
+}
+
+/* End Marshall College */

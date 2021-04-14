@@ -1,0 +1,436 @@
+
+/* Begin 1x1 Ruins */
+
+/* Sprites */
+spriteset (spr_ruins_a, "src/gfx/ruins_a_8bpp.png") {
+	template_z64(0,0)
+}
+
+spriteset (spr_ruins_b, "src/gfx/ruins_b_8bpp.png") {
+	template_z64(0,0)
+}
+
+spriteset (spr_ruins_c, "src/gfx/ruins_c_8bpp.png") {
+	template_z64(0,0)
+}
+
+spriteset (spr_ruins_d, "src/gfx/ruins_d_8bpp.png") {
+	template_z64(0,0)
+}
+
+/* Spritelayouts */
+spritelayout sprlay_ruins_a_0 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_a(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_a_1 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_a(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+spritelayout sprlay_ruins_b_0 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_b(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_b_1 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_b(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+spritelayout sprlay_ruins_c_0 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_c(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_c_1 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_c(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+spritelayout sprlay_ruins_d_0 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_d(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_d_1 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_d(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+/* Choose the animation frame */
+switch (FEAT_OBJECTS, SELF, anim_ruins_a, animation_frame) {
+	0: sprlay_ruins_a_0;
+	sprlay_ruins_a_1;
+}
+
+switch (FEAT_OBJECTS, SELF, anim_ruins_b, animation_frame) {
+	0: sprlay_ruins_b_0;
+	sprlay_ruins_b_1;
+}
+
+switch (FEAT_OBJECTS, SELF, anim_ruins_c, animation_frame) {
+	0: sprlay_ruins_c_0;
+	sprlay_ruins_c_1;
+}
+
+switch (FEAT_OBJECTS, SELF, anim_ruins_d, animation_frame) {
+	0: sprlay_ruins_d_0;
+	sprlay_ruins_d_1;
+}
+
+/* Choose a random ruin type, for variety */
+random_switch (FEAT_OBJECTS, SELF, random_ruins_b) {
+	1:  anim_ruins_a;
+	1:  anim_ruins_b;
+	1:  anim_ruins_c;
+	1:  anim_ruins_d;
+}
+
+/* Choose a random ruin rotation and store it for later */
+switch (FEAT_OBJECTS, SELF, random_ruins, STORE_TEMP(Random4(), 1) ) {random_ruins_b;} 
+
+/* ================================================= */
+/* Treasure ruins -- only one is allowed to generate */
+/* ================================================= */
+
+/* 6. The original creator [chrissawyer = 11] */
+item (FEAT_OBJECTS, object_ruins_treasure_1, 8) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_1);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE, OBJ_FLAG_REMOVE_IS_INCOME, OBJ_FLAG_ANIMATED);
+		animation_info: [ANIMATION_LOOPING, 2];
+		animation_speed: 4;
+		animation_triggers: ANIM_TRIGGER_OBJ_256_TICKS;
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: UniqueRuinTreasureCheck(8);
+		anim_next_frame: ContinueAnimateIfObjectCount(20, 11);
+		anim_control: StartAnimateIfObjectCount(20, 11);
+	}
+}
+
+/* 6. The original artist [simonfoster = 11] */
+item (FEAT_OBJECTS, object_ruins_treasure_2, 9) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_2);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE, OBJ_FLAG_REMOVE_IS_INCOME, OBJ_FLAG_ANIMATED);
+		animation_info: [ANIMATION_LOOPING, 2];
+		animation_speed: 4;
+		animation_triggers: ANIM_TRIGGER_OBJ_256_TICKS;
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: UniqueRuinTreasureCheck(9);
+		anim_next_frame: ContinueAnimateIfObjectCount(20, 11);
+		anim_control: StartAnimateIfObjectCount(20, 11);
+	}
+}
+
+/*6. The original composer [johnbroomhall = 13]*/
+item (FEAT_OBJECTS, object_ruins_treasure_4, 10) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_4);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE, OBJ_FLAG_REMOVE_IS_INCOME, OBJ_FLAG_ANIMATED);
+		animation_info: [ANIMATION_LOOPING, 2];
+		animation_speed: 4;
+		animation_triggers: ANIM_TRIGGER_OBJ_256_TICKS;
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: UniqueRuinTreasureCheck(10);
+		anim_next_frame: ContinueAnimateIfObjectCount(20, 13);
+		anim_control: StartAnimateIfObjectCount(20, 13);
+	}
+}
+
+/* ================================================ */
+/* Answers -- spawn only one, based on the treasure */
+/* ================================================ */
+
+item (FEAT_OBJECTS, object_ruins_sawyer, 14) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_6_CHRISSAWYER);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: MatchTreasureAndClueCheck(8);
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_foster, 15) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_6_SIMONFOSTER);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: MatchTreasureAndClueCheck(9);
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_broomhall, 16) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_6_JOHNBROOMHALL);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: MatchTreasureAndClueCheck(10);
+	}
+}
+
+/* ================================================= */
+/* Indestructible 1x1 ruins for clues and decoration */
+/* ================================================= */
+
+item (FEAT_OBJECTS, object_ruins_1, 1) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_1);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_2, 2) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_2);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_3, 3) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_3);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_4, 4) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_4);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_5, 5) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_5);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_7, 7) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_7);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+/* End 1x1 Ruins */

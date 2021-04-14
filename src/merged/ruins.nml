@@ -1,0 +1,573 @@
+/* *** Begin Header *** */
+
+grf {
+	grfid: "TT16";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESC);
+	version: 0;
+	min_compatible_version: 0;
+
+	url: string(STR_WEBSITE);
+}
+
+/* Scale object basecost to give a huge payoff */
+basecost {
+	PR_CLEAR_UNMOVABLE: 9;
+}
+
+/* *** End Header *** */
+
+// Begin Sprite Templates
+
+template template_z64(x, y) {
+    //left_x, upper_y, width, height, offset_x, offset_y
+    se: [ x,		y,		64,		78,		-31,		-46,	NOCROP | ANIM]
+    sw: [ x+72,		y,		64,		78,		-31,		-46,	NOCROP | ANIM]
+    nw: [ x+144,	y,		64,		78,		-31,		-46,	NOCROP | ANIM]
+    ne: [ x+216,	y,		64,		78,		-31,		-46,	NOCROP | ANIM]
+}
+
+template template_z64_single(x, y) {
+    //left_x, upper_y, width, height, offset_x, offset_y
+    se: [ x,		y,		64,		78,		-31,		-46,	NOCROP | ANIM]
+}
+
+template template_z128(x, y) {
+    //left_x, upper_y, width, height, offset_x, offset_y
+    se: [ x,		y,		64,		123,		-31,		-92,	NOCROP | ANIM]
+    sw: [ x+72,		y,		64,		123,		-31,		-92,	NOCROP | ANIM]
+    nw: [ x+144,	y,		64,		123,		-31,		-92,	NOCROP | ANIM]
+    ne: [ x+216,	y,		64,		123,		-31,		-92,	NOCROP | ANIM]
+}
+
+// End Sprite Templates
+
+/* Begin Functions */
+
+random_switch (FEAT_OBJECTS, SELF, Random4) {
+	1: return 0;
+	1: return 1;
+	1: return 2;
+	1: return 3;
+}
+
+switch (FEAT_OBJECTS, SELF, IsFlatTile, tile_slope == SLOPE_FLAT) {return;}
+switch (FEAT_OBJECTS, SELF, IsRainforest, terrain_type == TILETYPE_RAIN_FOREST) {return;}
+
+switch (FEAT_OBJECTS, SELF, RuinLocationCheck,
+	IsFlatTile() &&
+	IsRainforest()
+	) {1: return CB_RESULT_LOCATION_ALLOW; return CB_RESULT_LOCATION_DISALLOW_ONLY_RAINFOREST;}
+
+switch (FEAT_OBJECTS, SELF, MatchTreasureAndClueCheck, clue, 
+	IsFlatTile() &&
+	IsRainforest() &&
+	object_count(clue) == 1
+	) {1: return CB_RESULT_LOCATION_ALLOW; return CB_RESULT_LOCATION_DISALLOW_ONLY_RAINFOREST;}
+
+switch (FEAT_OBJECTS, SELF, RandomTreasure, map_type) {
+	MAP_TYPE_RECTANGULAR: return 8;
+	MAP_TYPE_X_BIGGER: return 9;
+	MAP_TYPE_Y_BIGGER: return 10;
+}
+	
+switch (FEAT_OBJECTS, SELF, UniqueRuinTreasureCheck, id,
+	IsFlatTile() &&
+	IsRainforest() &&
+	object_count(8) == 0 &&
+	object_count(9) == 0 &&
+	object_count(10) == 0 &&
+	object_count(11) == 0 &&
+	object_count(12) == 0 &&
+	object_count(13) == 0 &&
+	id == RandomTreasure()
+	) {1: return CB_RESULT_LOCATION_ALLOW; return CB_RESULT_LOCATION_DISALLOW_ONLY_RAINFOREST;}
+	
+switch (FEAT_OBJECTS, SELF, StartAnimateIfObjectCount, id, target, object_count(id) == target) {
+	1: return CB_RESULT_START_ANIMATION;
+	return CB_RESULT_STOP_ANIMATION;
+}
+
+switch (FEAT_OBJECTS, SELF, ContinueAnimateIfObjectCount, id, target, object_count(id) == target) {
+	1: return CB_RESULT_NEXT_FRAME;
+	return 0;
+}
+
+/* End Functions */
+
+
+/* Begin Marshall College */
+
+spriteset (spr_marshall_main, "src/gfx/marshall_main_8bpp.png") {
+	template_z64(0,0)
+}
+
+spritelayout sprlay_marshall_main {
+	ground {
+		sprite: 1420;
+	}
+	
+	building {
+		sprite: spr_marshall_main(LOAD_TEMP(1));
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+	}
+}
+
+switch (FEAT_OBJECTS, SELF, switch_marshall_sprite, STORE_TEMP(view, 1)) {sprlay_marshall_main;}
+
+item (FEAT_OBJECTS, object_marshall_main, 20) {
+	property {
+		class: "INDY";
+		classname: string(STR_RESEARCH_UNIVERSITY);
+		name: string(STR_MARSHALL_COLLEGE);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_INGAME, OBJ_FLAG_2CC);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 4;
+	}
+	graphics {
+		default: switch_marshall_sprite;
+	}
+}
+
+/* End Marshall College */
+
+
+/* Begin 1x1 Ruins */
+
+/* Sprites */
+spriteset (spr_ruins_a, "src/gfx/ruins_a_8bpp.png") {
+	template_z64(0,0)
+}
+
+spriteset (spr_ruins_b, "src/gfx/ruins_b_8bpp.png") {
+	template_z64(0,0)
+}
+
+spriteset (spr_ruins_c, "src/gfx/ruins_c_8bpp.png") {
+	template_z64(0,0)
+}
+
+spriteset (spr_ruins_d, "src/gfx/ruins_d_8bpp.png") {
+	template_z64(0,0)
+}
+
+/* Spritelayouts */
+spritelayout sprlay_ruins_a_0 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_a(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_a_1 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_a(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+spritelayout sprlay_ruins_b_0 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_b(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_b_1 {
+	ground {
+		sprite: GROUNDSPRITE_NORMAL;
+	}
+	
+	building {
+		sprite: spr_ruins_b(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+spritelayout sprlay_ruins_c_0 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_c(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_c_1 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_c(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+spritelayout sprlay_ruins_d_0 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_d(LOAD_TEMP(1));
+	}
+}
+
+spritelayout sprlay_ruins_d_1 {
+	ground {
+		sprite: 3962;
+	}
+	
+	building {
+		sprite: spr_ruins_d(LOAD_TEMP(1));
+	}
+	childsprite {
+		sprite: 703;
+		xoffset: 20;
+		yoffset: 24;
+	}
+}
+
+/* Choose the animation frame */
+switch (FEAT_OBJECTS, SELF, anim_ruins_a, animation_frame) {
+	0: sprlay_ruins_a_0;
+	sprlay_ruins_a_1;
+}
+
+switch (FEAT_OBJECTS, SELF, anim_ruins_b, animation_frame) {
+	0: sprlay_ruins_b_0;
+	sprlay_ruins_b_1;
+}
+
+switch (FEAT_OBJECTS, SELF, anim_ruins_c, animation_frame) {
+	0: sprlay_ruins_c_0;
+	sprlay_ruins_c_1;
+}
+
+switch (FEAT_OBJECTS, SELF, anim_ruins_d, animation_frame) {
+	0: sprlay_ruins_d_0;
+	sprlay_ruins_d_1;
+}
+
+/* Choose a random ruin type, for variety */
+random_switch (FEAT_OBJECTS, SELF, random_ruins_b) {
+	1:  anim_ruins_a;
+	1:  anim_ruins_b;
+	1:  anim_ruins_c;
+	1:  anim_ruins_d;
+}
+
+/* Choose a random ruin rotation and store it for later */
+switch (FEAT_OBJECTS, SELF, random_ruins, STORE_TEMP(Random4(), 1) ) {random_ruins_b;} 
+
+/* ================================================= */
+/* Treasure ruins -- only one is allowed to generate */
+/* ================================================= */
+
+/* 6. The original creator [chrissawyer = 11] */
+item (FEAT_OBJECTS, object_ruins_treasure_1, 8) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_1);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE, OBJ_FLAG_REMOVE_IS_INCOME, OBJ_FLAG_ANIMATED);
+		animation_info: [ANIMATION_LOOPING, 2];
+		animation_speed: 4;
+		animation_triggers: ANIM_TRIGGER_OBJ_256_TICKS;
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: UniqueRuinTreasureCheck(8);
+		anim_next_frame: ContinueAnimateIfObjectCount(20, 11);
+		anim_control: StartAnimateIfObjectCount(20, 11);
+	}
+}
+
+/* 6. The original artist [simonfoster = 11] */
+item (FEAT_OBJECTS, object_ruins_treasure_2, 9) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_2);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE, OBJ_FLAG_REMOVE_IS_INCOME, OBJ_FLAG_ANIMATED);
+		animation_info: [ANIMATION_LOOPING, 2];
+		animation_speed: 4;
+		animation_triggers: ANIM_TRIGGER_OBJ_256_TICKS;
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: UniqueRuinTreasureCheck(9);
+		anim_next_frame: ContinueAnimateIfObjectCount(20, 11);
+		anim_control: StartAnimateIfObjectCount(20, 11);
+	}
+}
+
+/*6. The original composer [johnbroomhall = 13]*/
+item (FEAT_OBJECTS, object_ruins_treasure_4, 10) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_4);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE, OBJ_FLAG_REMOVE_IS_INCOME, OBJ_FLAG_ANIMATED);
+		animation_info: [ANIMATION_LOOPING, 2];
+		animation_speed: 4;
+		animation_triggers: ANIM_TRIGGER_OBJ_256_TICKS;
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: UniqueRuinTreasureCheck(10);
+		anim_next_frame: ContinueAnimateIfObjectCount(20, 13);
+		anim_control: StartAnimateIfObjectCount(20, 13);
+	}
+}
+
+/* ================================================ */
+/* Answers -- spawn only one, based on the treasure */
+/* ================================================ */
+
+item (FEAT_OBJECTS, object_ruins_sawyer, 14) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_6_CHRISSAWYER);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: MatchTreasureAndClueCheck(8);
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_foster, 15) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_6_SIMONFOSTER);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: MatchTreasureAndClueCheck(9);
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_broomhall, 16) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_6_JOHNBROOMHALL);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: MatchTreasureAndClueCheck(10);
+	}
+}
+
+/* ================================================= */
+/* Indestructible 1x1 ruins for clues and decoration */
+/* ================================================= */
+
+item (FEAT_OBJECTS, object_ruins_1, 1) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_1);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_2, 2) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_2);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_3, 3) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_3);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_4, 4) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_4);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_5, 5) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_5);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+item (FEAT_OBJECTS, object_ruins_7, 7) {
+	property {
+		class: "RUIN";
+		classname: string(STR_GRF_NAME);
+		name: string(STR_OBJ_RUINS_7);
+		climates_available: bitmask(CLIMATE_TROPIC);
+		object_flags: bitmask(OBJ_FLAG_ONLY_SE);
+		size: [1,1];
+		introduction_date: 0;
+		height: 10;
+		num_views: 1;
+		count_per_map256: 1;
+		remove_cost_multiplier: 255;
+	}
+	graphics {
+		default: random_ruins;
+		autoslope: CB_RESULT_NO_AUTOSLOPE;
+		tile_check: RuinLocationCheck;
+	}
+}
+
+/* End 1x1 Ruins */

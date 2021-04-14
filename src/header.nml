@@ -1,0 +1,18 @@
+/* *** Begin Header *** */
+
+grf {
+	grfid: "TT16";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESC);
+	version: 0;
+	min_compatible_version: 0;
+
+	url: string(STR_WEBSITE);
+}
+
+/* Scale object basecost to give a huge payoff */
+basecost {
+	PR_CLEAR_UNMOVABLE: 9;
+}
+
+/* *** End Header *** */
